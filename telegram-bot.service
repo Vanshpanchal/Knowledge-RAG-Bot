@@ -1,0 +1,39 @@
+[Unit]
+Description=RAG Telegram Bot
+Documentation=https://github.com/your-org/knowledge-rag
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=botuser
+Group=botuser
+WorkingDirectory=/opt/rag-bot
+
+# Environment file with config
+EnvironmentFile=/opt/rag-bot/.env.bot
+Environment="PATH=/opt/rag-bot/.venv/bin:/usr/local/bin:/usr/bin"
+
+# Start command
+ExecStart=/opt/rag-bot/.venv/bin/python /opt/rag-bot/bot.py
+
+# Restart policy
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=60
+StartLimitBurst=5
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rag-bot
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/rag-bot/logs
+
+[Install]
+WantedBy=multi-user.target
